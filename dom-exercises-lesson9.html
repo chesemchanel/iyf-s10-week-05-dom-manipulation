@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOM Exercises – Lesson 9 | Chesem Chanel</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      padding: 1.5rem;
+      line-height: 1.6;
+    }
+    h1 { color: #58a6ff; margin-bottom: 0.25rem; font-size: clamp(1.3rem, 4vw, 1.8rem); }
+    .subtitle { color: #8b949e; font-size: 0.85rem; margin-bottom: 2rem; }
+    .exercise {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .exercise h2 { color: #58a6ff; font-size: 1rem; margin-bottom: 0.5rem; }
+    .exercise p  { font-size: 0.85rem; color: #8b949e; margin-bottom: 0.75rem; }
+    button {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      background: #238636;
+      color: #fff;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      transition: background 0.2s;
+    }
+    button:hover { background: #2ea043; }
+    button.danger { background: #da3633; }
+    button.danger:hover { background: #f85149; }
+    button.info { background: #1f6feb; }
+    button.info:hover { background: #388bfd; }
+    .output {
+      margin-top: 0.75rem;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-size: 0.85rem;
+      min-height: 2rem;
+    }
+    /* Demo elements */
+    #demoBox {
+      width: 100px; height: 100px;
+      background: #238636;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700;
+      transition: all 0.3s;
+      margin: 0.75rem 0;
+    }
+    #demoList { padding-left: 1.25rem; margin: 0.5rem 0; }
+    #demoList li { margin-bottom: 0.25rem; color: #58a6ff; }
+    #demoParent {
+      background: #1c2128;
+      border: 1px dashed #58a6ff;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+    }
+    #demoParent .child {
+      background: #238636;
+      border-radius: 4px;
+      padding: 0.35rem 0.75rem;
+      margin-bottom: 0.35rem;
+      font-size: 0.85rem;
+    }
+    #demoImage {
+      width: 80px; height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin: 0.5rem 0;
+      background: #58a6ff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 DOM Exercises — Lesson 9</h1>
+  <p class="subtitle">Week 5: DOM Manipulation | Chesem Chanel</p>
+
+  <!-- ── EXERCISE 1: DOM SELECTION ── -->
+  <div class="exercise">
+    <h2>Exercise 1 — DOM Selection</h2>
+    <p>Select elements using getElementById, querySelector, and querySelectorAll.</p>
+    <button onclick="ex1_byId()">getElementById</button>
+    <button onclick="ex1_querySelector()" class="info">querySelector</button>
+    <button onclick="ex1_querySelectorAll()" class="info">querySelectorAll</button>
+    <div id="demoBox">Box</div>
+    <div class="output" id="out1">Click a button to see selection in action.</div>
+  </div>
+
+  <!-- ── EXERCISE 2: DOM TRAVERSAL ── -->
+  <div class="exercise">
+    <h2>Exercise 2 — DOM Traversal</h2>
+    <p>Navigate the DOM using parentNode, children, firstChild, nextSibling.</p>
+    <div id="demoParent">
+      <div class="child" id="child1">Child 1</div>
+      <div class="child" id="child2">Child 2</div>
+      <div class="child" id="child3">Child 3</div>
+    </div>
+    <button onclick="ex2_parent()">Get Parent</button>
+    <button onclick="ex2_children()" class="info">Get Children</button>
+    <button onclick="ex2_sibling()" class="info">Next Sibling of Child1</button>
+    <div class="output" id="out2">Click a button to traverse the DOM.</div>
+  </div>
+
+  <!-- ── EXERCISE 3: CONTENT MANIPULATION ── -->
+  <div class="exercise">
+    <h2>Exercise 3 — Content Manipulation</h2>
+    <p>Change element content using textContent and innerHTML.</p>
+    <ul id="demoList">
+      <li>HTML</li>
+      <li>CSS</li>
+      <li>JavaScript</li>
+    </ul>
+    <button onclick="ex3_textContent()">Change with textContent</button>
+    <button onclick="ex3_innerHTML()" class="info">Change with innerHTML</button>
+    <button onclick="ex3_reset()" class="danger">Reset</button>
+    <div class="output" id="out3">Waiting...</div>
+  </div>
+
+  <!-- ── EXERCISE 4: ATTRIBUTE MANIPULATION ── -->
+  <div class="exercise">
+    <h2>Exercise 4 — Attribute Manipulation</h2>
+    <p>Get, set, and remove attributes using getAttribute, setAttribute, removeAttribute.</p>
+    <div id="demoImage">🖼️</div>
+    <button onclick="ex4_get()">getAttribute</button>
+    <button onclick="ex4_set()" class="info">setAttribute</button>
+    <button onclick="ex4_remove()" class="danger">removeAttribute</button>
+    <div class="output" id="out4">Waiting...</div>
+  </div>
+
+  <!-- ── EXERCISE 5: STYLE MANIPULATION ── -->
+  <div class="exercise">
+    <h2>Exercise 5 — Style Manipulation</h2>
+    <p>Change element styles directly using element.style and classList.</p>
+    <div id="demoBox2" style="width:100px;height:100px;background:#238636;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;margin:0.75rem 0;transition:all 0.3s;">Box 2</div>
+    <button onclick="ex5_style()">Change Style</button>
+    <button onclick="ex5_addClass()" class="info">Add Class</button>
+    <button onclick="ex5_toggle()" class="info">Toggle Color</button>
+    <button onclick="ex5_reset()" class="danger">Reset</button>
+    <div class="output" id="out5">Waiting...</div>
+  </div>
+
+  <script>
+    // ── EXERCISE 1: DOM SELECTION ────────────────────────────
+    function ex1_byId() {
+      const box = document.getElementById('demoBox');   // getElementById
+      box.style.background = '#1f6feb';
+      document.getElementById('out1').textContent =
+        'getElementById found: <div id="demoBox"> — changed color to blue!';
+    }
+
+    function ex1_querySelector() {
+      const box = document.querySelector('#demoBox');   // querySelector
+      box.style.background = '#da3633';
+      document.getElementById('out1').textContent =
+        'querySelector found: #demoBox — changed color to red!';
+    }
+
+    function ex1_querySelectorAll() {
+      const buttons = document.querySelectorAll('button'); // querySelectorAll
+      document.getElementById('out1').textContent =
+        `querySelectorAll('button') found ${buttons.length} buttons on this page.`;
+      document.getElementById('demoBox').style.background = '#238636';
+    }
+
+    // ── EXERCISE 2: DOM TRAVERSAL ────────────────────────────
+    function ex2_parent() {
+      const child = document.getElementById('child1');
+      const parent = child.parentNode;                  // parentNode traversal
+      document.getElementById('out2').textContent =
+        `child1.parentNode = <${parent.tagName} id="${parent.id}">`;
+    }
+
+    function ex2_children() {
+      const parent = document.getElementById('demoParent');
+      const kids = parent.children;                     // children traversal
+      const names = Array.from(kids).map(k => k.id).join(', ');
+      document.getElementById('out2').textContent =
+        `demoParent.children = [${names}] — ${kids.length} children found.`;
+    }
+
+    function ex2_sibling() {
+      const child1 = document.getElementById('child1');
+      let sibling = child1.nextElementSibling;          // nextElementSibling
+      document.getElementById('out2').textContent =
+        `child1.nextElementSibling = <div id="${sibling.id}"> — "${sibling.textContent}"`;
+    }
+
+    // ── EXERCISE 3: CONTENT MANIPULATION ────────────────────
+    function ex3_textContent() {
+      const list = document.getElementById('demoList');
+      list.textContent = 'Skills: HTML, CSS, JavaScript'; // textContent
+      document.getElementById('out3').textContent =
+        'Used textContent — replaces all content as plain text (no HTML parsed).';
+    }
+
+    function ex3_innerHTML() {
+      const list = document.getElementById('demoList');
+      list.innerHTML = '<li>🌐 HTML5</li><li>🎨 CSS3</li><li>⚡ JavaScript</li><li>🐍 Python</li>';
+      document.getElementById('out3').textContent =
+        'Used innerHTML — parsed HTML tags and rendered them as elements.';
+    }
+
+    function ex3_reset() {
+      document.getElementById('demoList').innerHTML =
+        '<li>HTML</li><li>CSS</li><li>JavaScript</li>';
+      document.getElementById('out3').textContent = 'Reset!';
+    }
+
+    // ── EXERCISE 4: ATTRIBUTE MANIPULATION ──────────────────
+    function ex4_get() {
+      const img = document.getElementById('demoImage');
+      const id = img.getAttribute('id');               // getAttribute
+      document.getElementById('out4').textContent =
+        `getAttribute('id') = "${id}"`;
+    }
+
+    function ex4_set() {
+      const img = document.getElementById('demoImage');
+      img.setAttribute('title', 'I am the demo image!'); // setAttribute
+      img.style.background = '#1f6feb';
+      img.textContent = '🎨';
+      document.getElementById('out4').textContent =
+        `setAttribute('title', '...') — hover over the box to see tooltip!`;
+    }
+
+    function ex4_remove() {
+      const img = document.getElementById('demoImage');
+      img.removeAttribute('title');                    // removeAttribute
+      img.style.background = '#da3633';
+      img.textContent = '🗑️';
+      document.getElementById('out4').textContent =
+        `removeAttribute('title') — tooltip removed!`;
+    }
+
+    // ── EXERCISE 5: STYLE MANIPULATION ──────────────────────
+    function ex5_style() {
+      const box = document.getElementById('demoBox2');
+      box.style.borderRadius = '50%';                  // Direct style change
+      box.style.background = '#9d4edd';
+      box.style.transform = 'rotate(45deg)';
+      document.getElementById('out5').textContent =
+        "Changed style directly: borderRadius='50%', background='purple', transform='rotate(45deg)'";
+    }
+
+    function ex5_addClass() {
+      const box = document.getElementById('demoBox2');
+      box.style.width = '140px';
+      box.style.height = '140px';
+      box.style.fontSize = '1.5rem';
+      box.textContent = 'Bigger!';
+      document.getElementById('out5').textContent =
+        'Used element.style to grow the box!';
+    }
+
+    function ex5_toggle() {
+      const box = document.getElementById('demoBox2');
+      const isGreen = box.style.background === 'rgb(35, 134, 54)' || !box.style.background;
+      box.style.background = isGreen ? '#e2b96f' : '#238636';
+      box.style.color = '#0d1117';
+      document.getElementById('out5').textContent =
+        `Toggled background color to ${isGreen ? 'gold' : 'green'}!`;
+    }
+
+    function ex5_reset() {
+      const box = document.getElementById('demoBox2');
+      box.style.cssText = 'width:100px;height:100px;background:#238636;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;margin:0.75rem 0;transition:all 0.3s;transform:none;font-size:1rem;';
+      box.textContent = 'Box 2';
+      document.getElementById('out5').textContent = 'Reset!';
+    }
+  </script>
+
+</body>
+</html>

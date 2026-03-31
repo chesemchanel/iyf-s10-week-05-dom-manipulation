@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Handling – Lesson 10 | Chesem Chanel</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      padding: 1.5rem;
+      line-height: 1.6;
+    }
+    h1 { color: #f78166; margin-bottom: 0.25rem; font-size: clamp(1.3rem, 4vw, 1.8rem); }
+    .subtitle { color: #8b949e; font-size: 0.85rem; margin-bottom: 2rem; }
+    .exercise {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .exercise h2 { color: #f78166; font-size: 1rem; margin-bottom: 0.5rem; }
+    .exercise p  { font-size: 0.85rem; color: #8b949e; margin-bottom: 0.75rem; }
+    .output {
+      margin-top: 0.75rem;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-size: 0.85rem;
+      min-height: 2.5rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      background: #da3633;
+      color: #fff;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    button:hover { background: #f85149; }
+    input[type="text"], input[type="email"], input[type="password"], textarea {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 6px;
+      border: 1px solid #30363d;
+      background: #0d1117;
+      color: #c9d1d9;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus { border-color: #f78166; }
+    label { font-size: 0.85rem; color: #8b949e; display: block; margin-bottom: 0.25rem; }
+    .click-box {
+      width: 120px; height: 120px;
+      background: #da3633;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      user-select: none;
+      transition: all 0.2s;
+      margin: 0.75rem 0;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .click-box:active { transform: scale(0.95); }
+    .key-display {
+      font-size: 2rem;
+      text-align: center;
+      padding: 1rem;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      margin: 0.5rem 0;
+      min-height: 4rem;
+      display: flex; align-items: center; justify-content: center;
+      color: #f78166;
+      font-weight: 700;
+    }
+    .log {
+      max-height: 140px;
+      overflow-y: auto;
+      font-size: 0.78rem;
+      color: #8b949e;
+    }
+    .log div { border-bottom: 1px solid #21262d; padding: 0.2rem 0; }
+    .log div:last-child { border-bottom: none; color: #f78166; }
+    .submit-form input { margin-bottom: 0.5rem; }
+    .valid   { border-color: #238636 !important; }
+    .invalid { border-color: #da3633 !important; }
+    .form-error { font-size: 0.75rem; color: #f85149; margin-top: -0.4rem; margin-bottom: 0.4rem; }
+    .success-msg {
+      background: rgba(35,134,54,0.15);
+      border: 1px solid #238636;
+      border-radius: 6px;
+      padding: 0.75rem;
+      color: #3fb950;
+      font-size: 0.85rem;
+      display: none;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Event Handling — Lesson 10</h1>
+  <p class="subtitle">Week 5: DOM Manipulation | Chesem Chanel</p>
+
+  <!-- ── EXERCISE 1: CLICK EVENTS ── -->
+  <div class="exercise">
+    <h2>Exercise 1 — Click Events</h2>
+    <p>Handle single click, double click, and right click events.</p>
+
+    <div class="click-box" id="clickBox">Click Me!</div>
+
+    <div class="output">
+      <div class="log" id="clickLog">Waiting for clicks...</div>
+    </div>
+  </div>
+
+  <!-- ── EXERCISE 2: INPUT EVENTS ── -->
+  <div class="exercise">
+    <h2>Exercise 2 — Input Events</h2>
+    <p>Listen to input, change, focus, and blur events on form fields.</p>
+
+    <label for="liveInput">Type something:</label>
+    <input type="text" id="liveInput" placeholder="Start typing..." maxlength="50" />
+
+    <div class="output" id="out2">
+      <div>Characters: <strong id="charCount">0</strong></div>
+      <div>Event log: <span id="inputEventLog">—</span></div>
+    </div>
+  </div>
+
+  <!-- ── EXERCISE 3: SUBMIT EVENT ── -->
+  <div class="exercise">
+    <h2>Exercise 3 — Submit Event & Form Validation</h2>
+    <p>Handle the submit event and validate form fields before submission.</p>
+
+    <form id="submitForm" class="submit-form" novalidate>
+      <label for="nameField">Full Name *</label>
+      <input type="text" id="nameField" placeholder="Chesem Chanel" />
+      <div class="form-error" id="nameError"></div>
+
+      <label for="emailField">Email *</label>
+      <input type="email" id="emailField" placeholder="chesem@email.com" />
+      <div class="form-error" id="emailError"></div>
+
+      <label for="passField">Password * (min 6 chars)</label>
+      <input type="password" id="passField" placeholder="••••••" />
+      <div class="form-error" id="passError"></div>
+
+      <button type="submit" style="background:#238636;">Submit Form</button>
+      <button type="reset" style="background:#30363d;">Reset</button>
+    </form>
+
+    <div class="success-msg" id="successMsg">✅ Form submitted successfully! Welcome, <strong id="welcomeName"></strong>!</div>
+    <div class="output" id="out3">Submit log will appear here.</div>
+  </div>
+
+  <!-- ── EXERCISE 4: KEYBOARD EVENTS ── -->
+  <div class="exercise">
+    <h2>Exercise 4 — Keyboard Events</h2>
+    <p>Listen to keydown, keyup, and keypress events. Click the area below then press any key!</p>
+
+    <div class="key-display" id="keyDisplay" tabindex="0">
+      Click here then press a key ⌨️
+    </div>
+
+    <div class="output">
+      <div class="log" id="keyLog">Key log will appear here...</div>
+    </div>
+  </div>
+
+  <!-- ── EXERCISE 5: MOUSE EVENTS ── -->
+  <div class="exercise">
+    <h2>Exercise 5 — Mouse Events</h2>
+    <p>Track mouseover, mouseout, mousemove events.</p>
+
+    <div id="mouseBox" style="height:100px;background:#1c2128;border:1px dashed #f78166;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:crosshair;margin:0.5rem 0;font-size:0.85rem;color:#8b949e;">
+      Move your mouse here
+    </div>
+
+    <div class="output" id="out5">Mouse position will appear here.</div>
+  </div>
+
+  <script>
+    // ── EXERCISE 1: CLICK EVENTS ──────────────────────────────
+    const clickBox = document.getElementById('clickBox');
+    const clickLog = document.getElementById('clickLog');
+    let clickCount = 0;
+
+    function logClick(msg) {
+      const div = document.createElement('div');
+      div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      clickLog.insertBefore(div, clickLog.firstChild);
+      if (clickLog.children.length > 6) clickLog.removeChild(clickLog.lastChild);
+    }
+
+    // Single click event
+    clickBox.addEventListener('click', () => {
+      clickCount++;
+      clickBox.style.background = `hsl(${clickCount * 40}, 70%, 45%)`;
+      clickBox.textContent = `Clicked ${clickCount}x!`;
+      logClick(`click — total: ${clickCount}`);
+    });
+
+    // Double click event
+    clickBox.addEventListener('dblclick', () => {
+      clickBox.style.transform = 'scale(1.15)';
+      setTimeout(() => clickBox.style.transform = '', 300);
+      logClick('dblclick — double clicked!');
+    });
+
+    // Right click (contextmenu) event
+    clickBox.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      clickBox.style.borderRadius = clickBox.style.borderRadius === '50%' ? '10px' : '50%';
+      logClick('contextmenu — right clicked! (shape toggled)');
+    });
+
+    // ── EXERCISE 2: INPUT EVENTS ──────────────────────────────
+    const liveInput    = document.getElementById('liveInput');
+    const charCount    = document.getElementById('charCount');
+    const inputEvtLog  = document.getElementById('inputEventLog');
+
+    // input event — fires on every keystroke
+    liveInput.addEventListener('input', () => {
+      charCount.textContent = liveInput.value.length;
+      inputEvtLog.textContent = `input — value: "${liveInput.value}"`;
+    });
+
+    // focus event
+    liveInput.addEventListener('focus', () => {
+      inputEvtLog.textContent = 'focus — field is active!';
+      liveInput.style.background = '#1c2128';
+    });
+
+    // blur event
+    liveInput.addEventListener('blur', () => {
+      inputEvtLog.textContent = `blur — left field. Final value: "${liveInput.value}"`;
+      liveInput.style.background = '#0d1117';
+    });
+
+    // change event
+    liveInput.addEventListener('change', () => {
+      inputEvtLog.textContent = `change — committed value: "${liveInput.value}"`;
+    });
+
+    // ── EXERCISE 3: SUBMIT EVENT ──────────────────────────────
+    const form = document.getElementById('submitForm');
+
+    function validate(id, errorId, condition, message) {
+      const field = document.getElementById(id);
+      const err   = document.getElementById(errorId);
+      if (condition) {
+        field.className = 'invalid';
+        err.textContent = message;
+        return false;
+      } else {
+        field.className = 'valid';
+        err.textContent = '';
+        return true;
+      }
+    }
+
+    // submit event
+    form.addEventListener('submit', (e) => {
+      e.preventDefault(); // Prevent default form submission
+
+      const name  = document.getElementById('nameField').value.trim();
+      const email = document.getElementById('emailField').value.trim();
+      const pass  = document.getElementById('passField').value;
+
+      const v1 = validate('nameField',  'nameError',  name.length < 2,           'Name must be at least 2 characters.');
+      const v2 = validate('emailField', 'emailError', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), 'Please enter a valid email address.');
+      const v3 = validate('passField',  'passError',  pass.length < 6,           'Password must be at least 6 characters.');
+
+      const out = document.getElementById('out3');
+
+      if (v1 && v2 && v3) {
+        out.textContent = `✅ submit event fired — all fields valid! Name: ${name}, Email: ${email}`;
+        document.getElementById('welcomeName').textContent = name;
+        document.getElementById('successMsg').style.display = 'block';
+        form.reset();
+        ['nameField','emailField','passField'].forEach(id => document.getElementById(id).className = '');
+      } else {
+        out.textContent = '❌ submit event fired — validation failed. Fix errors above.';
+        document.getElementById('successMsg').style.display = 'none';
+      }
+    });
+
+    // Real-time validation on input
+    ['nameField','emailField','passField'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        document.getElementById(id).className = '';
+        const errId = id.replace('Field', 'Error');
+        document.getElementById(errId).textContent = '';
+      });
+    });
+
+    // ── EXERCISE 4: KEYBOARD EVENTS ───────────────────────────
+    const keyDisplay = document.getElementById('keyDisplay');
+    const keyLog     = document.getElementById('keyLog');
+    let keyLogEntries = [];
+
+    keyDisplay.addEventListener('keydown', (e) => {
+      keyDisplay.textContent = e.key === ' ' ? '[ SPACE ]' : e.key;
+      keyDisplay.style.color = '#f78166';
+
+      const entry = `keydown — key: "${e.key}" | code: "${e.code}" | shift: ${e.shiftKey} | ctrl: ${e.ctrlKey}`;
+      keyLogEntries.unshift(entry);
+      if (keyLogEntries.length > 5) keyLogEntries.pop();
+      keyLog.innerHTML = keyLogEntries.map(l => `<div>${l}</div>`).join('');
+    });
+
+    keyDisplay.addEventListener('keyup', (e) => {
+      keyDisplay.style.color = '#58a6ff';
+    });
+
+    // ── EXERCISE 5: MOUSE EVENTS ──────────────────────────────
+    const mouseBox = document.getElementById('mouseBox');
+    const out5     = document.getElementById('out5');
+
+    mouseBox.addEventListener('mousemove', (e) => {
+      const rect = mouseBox.getBoundingClientRect();
+      const x = Math.round(e.clientX - rect.left);
+      const y = Math.round(e.clientY - rect.top);
+      mouseBox.textContent = `🖱️ X: ${x}px  Y: ${y}px`;
+      out5.textContent = `mousemove — position inside box: X=${x}, Y=${y}`;
+    });
+
+    mouseBox.addEventListener('mouseover', () => {
+      mouseBox.style.borderColor = '#3fb950';
+      mouseBox.style.background  = '#1c2d1e';
+    });
+
+    mouseBox.addEventListener('mouseout', () => {
+      mouseBox.style.borderColor = '#f78166';
+      mouseBox.style.background  = '#1c2128';
+      mouseBox.textContent = 'Move your mouse here';
+      out5.textContent = 'mouseout — mouse left the box.';
+    });
+  </script>
+
+</body>
+</html>

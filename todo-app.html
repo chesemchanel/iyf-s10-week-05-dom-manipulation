@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To-Do List | Chesem Chanel</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      color: #64ffda;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 2rem;
+    }
+
+    .app {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Stats bar */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .stats span { color: #64ffda; font-weight: 700; }
+
+    /* Input area */
+    .input-area {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-area input:focus { border-color: #64ffda; }
+    .input-area input::placeholder { color: #888; }
+
+    .input-area button {
+      padding: 0.75rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      background: #64ffda;
+      color: #0f2027;
+      font-weight: 700;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .input-area button:hover { background: #a0ffe8; }
+    .input-area button:active { transform: scale(0.95); }
+
+    /* Filter buttons */
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.4rem 0.9rem;
+      border-radius: 99px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: #aaa;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: #64ffda;
+      color: #0f2027;
+      border-color: #64ffda;
+      font-weight: 700;
+    }
+
+    /* Character counter */
+    .char-counter {
+      font-size: 0.75rem;
+      color: #888;
+      text-align: right;
+      margin-top: -0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .char-counter.warning { color: #ffa500; }
+    .char-counter.danger  { color: #ff6b6b; }
+
+    /* Task list */
+    .task-list { list-style: none; }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.6rem;
+      transition: all 0.2s;
+      animation: slideIn 0.25s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .task-item:hover { border-color: #64ffda44; }
+
+    .task-item.completed {
+      opacity: 0.5;
+      border-color: rgba(255,255,255,0.05);
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    /* Checkbox */
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #64ffda;
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      font-size: 0.7rem;
+    }
+
+    .task-item.completed .task-checkbox {
+      background: #64ffda;
+      color: #0f2027;
+    }
+
+    .task-text { flex: 1; font-size: 0.95rem; word-break: break-word; }
+
+    .task-priority {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .priority-high   { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+    .priority-medium { background: rgba(255,165,0,0.2);   color: #ffa500; }
+    .priority-low    { background: rgba(100,255,218,0.2); color: #64ffda; }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #ff6b6b;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .delete-btn:hover { background: rgba(255,107,107,0.15); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #888;
+      display: none;
+    }
+
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+    /* Clear completed */
+    .clear-btn {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255,107,107,0.3);
+      background: transparent;
+      color: #ff6b6b;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .clear-btn:hover { background: rgba(255,107,107,0.1); }
+
+    /* Priority selector */
+    .priority-select {
+      padding: 0.75rem 0.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 0.85rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .priority-select option { background: #203a43; }
+  </style>
+</head>
+<body>
+
+  <h1>✅ My To-Do List</h1>
+  <p class="subtitle">Week 5: DOM Manipulation — Chesem Chanel</p>
+
+  <div class="app">
+
+    <!-- Stats -->
+    <div class="stats">
+      <div>Total: <span id="totalCount">0</span></div>
+      <div>Done: <span id="doneCount">0</span></div>
+      <div>Remaining: <span id="remainingCount">0</span></div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <input type="text" id="taskInput" placeholder="Add a new task..." maxlength="80" />
+      <select class="priority-select" id="prioritySelect">
+        <option value="low">🟢</option>
+        <option value="medium" selected>🟡</option>
+        <option value="high">🔴</option>
+      </select>
+      <button id="addBtn" title="Add task">+</button>
+    </div>
+    <div class="char-counter" id="charCounter">0 / 80</div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="active">Active</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+      <button class="filter-btn" data-filter="high">🔴 High</button>
+    </div>
+
+    <!-- Task List -->
+    <ul class="task-list" id="taskList"></ul>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <div class="icon">📋</div>
+      <p>No tasks here! Add one above.</p>
+    </div>
+
+    <!-- Clear completed -->
+    <button class="clear-btn" id="clearBtn">🗑️ Clear completed tasks</button>
+
+  </div>
+
+  <script>
+    // ── STATE ──────────────────────────────────────────────
+    let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    let currentFilter = 'all';
+
+    // ── DOM SELECTION ──────────────────────────────────────
+    const taskInput     = document.getElementById('taskInput');
+    const addBtn        = document.getElementById('addBtn');
+    const taskList      = document.getElementById('taskList');
+    const emptyState    = document.getElementById('emptyState');
+    const charCounter   = document.getElementById('charCounter');
+    const prioritySelect = document.getElementById('prioritySelect');
+    const clearBtn      = document.getElementById('clearBtn');
+    const totalCount    = document.getElementById('totalCount');
+    const doneCount     = document.getElementById('doneCount');
+    const remainingCount = document.getElementById('remainingCount');
+
+    // ── RENDER ─────────────────────────────────────────────
+    function render() {
+      // Filter tasks
+      const filtered = tasks.filter(task => {
+        if (currentFilter === 'active')    return !task.completed;
+        if (currentFilter === 'completed') return task.completed;
+        if (currentFilter === 'high')      return task.priority === 'high';
+        return true;
+      });
+
+      // Clear list (DOM manipulation)
+      taskList.innerHTML = '';
+
+      // Show/hide empty state
+      emptyState.style.display = filtered.length === 0 ? 'block' : 'none';
+
+      // Render each task
+      filtered.forEach(task => {
+        const li = document.createElement('li');          // Create element
+        li.className = 'task-item' + (task.completed ? ' completed' : '');
+        li.dataset.id = task.id;                           // Set attribute
+
+        // Checkbox
+        const checkbox = document.createElement('div');
+        checkbox.className = 'task-checkbox';
+        checkbox.innerHTML = task.completed ? '✓' : '';
+        checkbox.title = task.completed ? 'Mark incomplete' : 'Mark complete';
+
+        // Task text
+        const text = document.createElement('span');
+        text.className = 'task-text';
+        text.textContent = task.text;                      // Set content
+
+        // Priority badge
+        const badge = document.createElement('span');
+        badge.className = `task-priority priority-${task.priority}`;
+        badge.textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+
+        // Delete button
+        const delBtn = document.createElement('button');
+        delBtn.className = 'delete-btn';
+        delBtn.innerHTML = '🗑';
+        delBtn.title = 'Delete task';
+
+        // Append children (DOM traversal / manipulation)
+        li.appendChild(checkbox);
+        li.appendChild(text);
+        li.appendChild(badge);
+        li.appendChild(delBtn);
+        taskList.appendChild(li);
+
+        // ── EVENT HANDLING ─────────────────────────────────
+
+        // Click event — toggle complete
+        checkbox.addEventListener('click', () => toggleTask(task.id));
+        text.addEventListener('click', () => toggleTask(task.id));
+
+        // Click event — delete
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteTask(task.id);
+        });
+      });
+
+      // Update stats (DOM content manipulation)
+      const done = tasks.filter(t => t.completed).length;
+      totalCount.textContent     = tasks.length;
+      doneCount.textContent      = done;
+      remainingCount.textContent = tasks.length - done;
+
+      // Save to localStorage
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // ── TASK ACTIONS ────────────────────────────────────────
+    function addTask() {
+      const text = taskInput.value.trim();
+      if (!text) {
+        // Style manipulation on error
+        taskInput.style.borderColor = '#ff6b6b';
+        setTimeout(() => taskInput.style.borderColor = '', 1000);
+        return;
+      }
+
+      tasks.unshift({
+        id: Date.now(),
+        text,
+        completed: false,
+        priority: prioritySelect.value
+      });
+
+      taskInput.value = '';
+      charCounter.textContent = '0 / 80';
+      charCounter.className = 'char-counter';
+      render();
+    }
+
+    function toggleTask(id) {
+      tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+      render();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      render();
+    }
+
+    // ── EVENT LISTENERS ─────────────────────────────────────
+
+    // Click event — add button
+    addBtn.addEventListener('click', addTask);
+
+    // Keyboard event — press Enter to add
+    taskInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    // Input event — character counter
+    taskInput.addEventListener('input', () => {
+      const len = taskInput.value.length;
+      charCounter.textContent = `${len} / 80`;
+      charCounter.className = 'char-counter' +
+        (len > 70 ? ' danger' : len > 55 ? ' warning' : '');
+    });
+
+    // Click events — filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    // Click event — clear completed
+    clearBtn.addEventListener('click', () => {
+      tasks = tasks.filter(t => !t.completed);
+      render();
+    });
+
+    // Initial render
+    render();
+  </script>
+
+</body>
+</html>
